@@ -1,7 +1,16 @@
-﻿* text=auto eol=lf
+﻿# Usa LF en el repo; Windows podrá usar CRLF en el working copy
+* text=auto eol=lf
 
-# scripts por SO
-*.sh  text eol=lf
-*.ps1 text eol=crlf
-*.cmd text eol=crlf
+# Excepciones comunes
 *.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Asegura LF en código y scripts Unix
+*.js  text eol=lf
+*.ts  text eol=lf
+*.json text eol=lf
+*.md  text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh  text eol=lf
