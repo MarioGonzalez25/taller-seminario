@@ -1,3 +1,4 @@
+// /src/App.jsx
 import { useEffect, useMemo, useState } from "react";
 import api from "./api";
 import "./styles.css";
@@ -21,7 +22,11 @@ export default function App() {
 
   // form
   const [title, setTitle] = useState("");
-  const [prio, setPrio] = useState("BAJA"); // como tu maqueta
+  const [prio, setPrio] = useState("BAJA");
+
+  // edición (reutiliza el mismo input superior)
+  const [editingId, setEditingId] = useState(null);
+  const isEditing = Boolean(editingId);
 
   // filtros
   const [fStatus, setFStatus] = useState("TODAS");
@@ -29,7 +34,15 @@ export default function App() {
 
   async function load() {
     const { data } = await api.get("/api/tasks?sort=-createdAt&limit=200");
-    const items = data.items || data;
+    const items = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.items)
+      ? data.items
+      : Array.isArray(data?.data)
+      ? data.data
+      : Array.isArray(data?.tasks)
+      ? data.tasks
+      : [];
     setTasks(items);
     setLoading(false);
   }
@@ -39,11 +52,28 @@ export default function App() {
 
   async function addTask(e) {
     e.preventDefault();
+    if (isEditing) return; // si está en edición, el botón cambia a Guardar
     if (!title.trim()) return;
     const { data } = await api.post("/api/tasks", { title, priority: prio });
     setTasks((prev) => [data, ...prev]);
     setTitle("");
     setPrio("BAJA");
+  }
+
+  function startEdit(t) {
+    setEditingId(t._id);
+    setTitle(t.title || "");
+    setPrio(t.priority || "BAJA");
+  }
+
+  async function saveEdit() {
+    if (!editingId) return;
+    const payload = { title: title.trim(), priority: prio };
+    await api.put(`/api/tasks/${editingId}`, payload);
+    setEditingId(null);
+    setTitle("");
+    setPrio("BAJA");
+    await load();
   }
 
   async function toggleDone(t) {
@@ -96,12 +126,18 @@ export default function App() {
       </div>
 
       {/* FORMULARIO */}
-      <form onSubmit={addTask} className="toolbar">
+      <form
+        onSubmit={addTask}
+        className="toolbar"
+        data-testid="task-form"
+      >
         <input
           className="input"
           placeholder="Escribe tu nueva tarea..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          data-testid="task-title-input"
+          name="title"
         />
         <select
           className="select"
@@ -112,9 +148,21 @@ export default function App() {
           <option value="MEDIA">Prioridad Media</option>
           <option value="ALTA">Prioridad Alta</option>
         </select>
-        <button className="btn" type="submit">
-          ＋ Agregar Tarea
-        </button>
+
+        {!isEditing ? (
+          <button className="btn" type="submit" data-testid="add-task-btn">
+            ＋ Agregar Tarea
+          </button>
+        ) : (
+          <button
+            className="btn"
+            type="button"
+            onClick={saveEdit}
+            data-testid="save-task-btn"
+          >
+            Guardar
+          </button>
+        )}
       </form>
 
       {/* FILTROS */}
@@ -157,13 +205,15 @@ export default function App() {
           <p>¡Agrega tu primera tarea para comenzar!</p>
         </div>
       ) : (
-        <div className="list">
+        <div className="list" data-testid="task-list">
           {filtered.map((t) => (
-            <div className="item" key={t._id}>
+            <div className="item" key={t._id} data-testid="task-item" data-task-id={t._id}>
               <div className="left">
                 <Badge value={t.priority} />
                 <div>
                   <h3
+                    className="task-title"
+                    data-testid="task-title"
                     style={{
                       textDecoration:
                         t.status === "COMPLETADA" ? "line-through" : "none",
@@ -178,13 +228,37 @@ export default function App() {
                   )}
                 </div>
               </div>
+
               <div className="actions">
-                <button className="done" onClick={() => toggleDone(t)}>
-                  {t.status === "COMPLETADA"
-                    ? "Marcar pendiente"
-                    : "Marcar completada"}
+                {/* Editar */}
+                <button
+                  className="done"
+                  type="button"
+                  onClick={() => startEdit(t)}
+                  data-testid="task-edit-btn"
+                >
+                  Editar
                 </button>
-                <button onClick={() => removeTask(t._id)}>Eliminar</button>
+
+                {/* Toggle de completada como checkbox (estable para Cypress) */}
+                <label className="toggle" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <input
+                    type="checkbox"
+                    data-testid="task-toggle"
+                    checked={t.status === "COMPLETADA"}
+                    onChange={() => toggleDone(t)}
+                  />
+                  Completa
+                </label>
+
+                {/* Eliminar */}
+                <button
+                  type="button"
+                  onClick={() => removeTask(t._id)}
+                  data-testid="task-delete-btn"
+                >
+                  Eliminar
+                </button>
               </div>
             </div>
           ))}
