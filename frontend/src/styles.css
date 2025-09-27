@@ -1,0 +1,272 @@
+/* =========================
+   TaskMaster - styles.css
+   Forzar esquema CLARO + texto legible
+   ========================= */
+
+:root {
+  /* Colores base */
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+
+  /* Cabecera / botón agregar */
+  --grad1: #34d399;
+  --grad2: #06b6d4;
+  --btn1: #60a5fa;
+  --btn2: #22d3ee;
+
+  /* Prioridades */
+  --alta: #ef4444;
+  --media: #f59e0b;
+  --baja: #10b981;
+
+  /* Sombra agradable */
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+/* Evitar inversiones de color por modo oscuro del SO/navegador */
+html {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text); /* TEXTO OSCURO GLOBAL */
+  font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* ---- Layout general ---- */
+.container {
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+/* ---- Cabecera con degradado ---- */
+.header {
+  background: linear-gradient(135deg, var(--grad1), var(--grad2));
+  color: #fff;
+  border-radius: 24px;
+  padding: 28px 24px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+.header h1 {
+  margin: 0;
+  font-size: 40px;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header p {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ---- Tarjeta de estadísticas ---- */
+.stats {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 16px;
+  margin: 18px 0;
+  box-shadow: var(--shadow);
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+.stat span.num {
+  font-size: 28px;
+  font-weight: 800;
+}
+.stat span.label {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* ---- Formulario principal ---- */
+.toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* Campos de formulario SIEMPRE legibles */
+input,
+select,
+textarea,
+button {
+  color: var(--text) !important; /* texto OSCURO */
+  background: #ffffff !important; /* fondo blanco */
+  border: 1px solid var(--border);
+  font: inherit;
+  outline: none;
+}
+/* Placeholder legible */
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+/* Auto-completado Chrome */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--text) !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+}
+
+/* Inputs y selects con radios suaves */
+.input {
+  flex: 1 1 340px;
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+.select {
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+/* Opciones del select (lista desplegable) */
+select option {
+  color: var(--text);
+  background: #ffffff;
+}
+
+/* Botón “+ Agregar Tarea” con texto oscuro para contraste */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--btn1), var(--btn2));
+  color: #012a38 !important; /* texto oscuro */
+  font-weight: 800;
+  box-shadow: 0 10px 26px rgba(34, 211, 238, 0.35);
+  transition: transform 0.06s ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(0);
+}
+
+/* ---- Barra de filtros ---- */
+.filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 12px;
+  box-shadow: var(--shadow);
+}
+
+/* ---- Lista de tareas ---- */
+.list {
+  margin-top: 16px;
+  display: grid;
+  gap: 12px;
+}
+.item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  align-items: flex-start;
+}
+.left {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+h3 {
+  margin: 0 0 6px;
+}
+
+/* ---- Badges de prioridad ---- */
+.badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  border: 1px solid transparent;
+}
+.badge.alta {
+  background: rgba(239, 68, 68, 0.12);
+  color: #991b1b;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+.badge.media {
+  background: rgba(245, 158, 11, 0.12);
+  color: #92400e;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+.badge.baja {
+  background: rgba(16, 185, 129, 0.12);
+  color: #065f46;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+/* ---- Botones de acción en ítems ---- */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.actions button {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #f8fafc;
+  color: var(--text);
+  cursor: pointer;
+}
+.actions .done {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+/* ---- Estado vacío ---- */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 60px 16px;
+  color: var(--muted);
+}
+.empty .icon {
+  font-size: 48px;
+}

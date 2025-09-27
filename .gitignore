@@ -1,0 +1,25 @@
+﻿# Dependencias y builds (se regeneran)
+node_modules/
+dist/
+build/
+coverage/
+.tmp/
+.cache/
+
+# Entornos/secretos (¡nunca subir!)
+.env
+.env.*.local
+backend/.env
+frontend/.env
+
+# Artefactos de pruebas E2E
+cypress/videos/
+cypress/screenshots/
+playwright-report/
+test-results/
+
+# Archivos del sistema/editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
